@@ -94,6 +94,12 @@ button:disabled {
   font-size: 1rem;
 }
 
+.picked-role-user {
+  background-color: #ffcc00; /* Example color for picked role user */
+  color: #333;
+  font-weight: bold;
+}
+
 .results-section {
   margin-top: 2rem;
 }
@@ -110,4 +116,13 @@ button:disabled {
   padding: 2px 8px;
   font-size: 0.8rem;
   margin-left: 10px;
+}
+
+.white-button {
+  background-color: white;
+  color: #282c34;
+}
+
+.white-button:hover:not(:disabled) {
+  background-color: #f0f0f0; /* Lighter shade on hover */
 }

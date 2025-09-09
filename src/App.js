@@ -8,6 +8,7 @@ function App() {
   const [newUserName, setNewUserName] = useState('');
   const [pickedUsers, setPickedUsers] = useState([]);
   const [showModal, setShowModal] = useState(false); // New state for modal visibility
+  const [pickedRoles, setPickedRoles] = useState({}); // New state for role assignments
 
   useEffect(() => {
     const savedUsers = localStorage.getItem('users');
@@ -20,6 +21,22 @@ function App() {
     localStorage.setItem('users', JSON.stringify(users));
   }, [users]);
 
+  // Effect to update pickedUsers for modal and availableUsers when users or pickedRoles change
+  useEffect(() => {
+    const currentlyPickedUsers = Object.values(pickedRoles);
+    setPickedUsers(currentlyPickedUsers);
+
+    const newAvailableUsers = users.filter(user => !currentlyPickedUsers.includes(user));
+    // Only update if truly different to avoid infinite loops
+    // This check is a bit tricky with arrays, but for simple strings, includes works.
+    // A more robust check would involve comparing array contents.
+    if (JSON.stringify(newAvailableUsers) !== JSON.stringify(users.filter(user => !Object.values(pickedRoles).includes(user)))) {
+        // This is a simplified check, ideally you'd compare the actual content of the arrays
+        // to prevent unnecessary re-renders if the order changes but content is same.
+        // For now, we'll rely on the fact that pickedRoles changes will trigger this.
+    }
+  }, [users, pickedRoles]);
+
   const handleUserAdd = (e) => {
     e.preventDefault();
     if (newUserName.trim() === '') return;
@@ -29,36 +46,57 @@ function App() {
   };
 
   const handleUserRemove = (index) => {
+    const userToRemove = users[index];
     setUsers(users.filter((_, i) => i !== index));
+    // Also remove from pickedRoles if this user was assigned a role
+    const newPickedRoles = { ...pickedRoles };
+    for (const role in newPickedRoles) {
+      if (newPickedRoles[role] === userToRemove) {
+        delete newPickedRoles[role];
+      }
+    }
+    setPickedRoles(newPickedRoles);
   };
 
-  const handleFileUpload = (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-
-    const reader = new FileReader();
-    reader.onload = (event) => {
-      const text = event.target.result;
-      const names = text.split(/\r?\n/).map(name => name.trim()).filter(name => name !== '');
-      setUsers((prevUsers) => [...prevUsers, ...names]);
-    };
-    reader.readAsText(file);
+  const handleClearAllUsers = () => {
+    setUsers([]);
+    setPickedRoles({}); // Clear all role assignments too
   };
 
-  const handlePick = (count) => { // Consolidated pick logic
-    if (users.length < count) return;
-    const shuffled = [...users].sort(() => 0.5 - Math.random());
+  const handlePick = (count) => { // Consolidated pick logic for general picks
+    const currentlyPickedUsers = Object.values(pickedRoles);
+    const availableForGeneralPick = users.filter(user => !currentlyPickedUsers.includes(user));
+
+    if (availableForGeneralPick.length < count) return;
+    const shuffled = [...availableForGeneralPick].sort(() => 0.5 - Math.random());
     setPickedUsers(shuffled.slice(0, count));
     setShowModal(true); // Show modal after picking
   };
 
+  const handlePickRole = (role) => {
+    const currentlyPickedUsers = Object.values(pickedRoles);
+    const availableUsersForRole = users.filter(user => !currentlyPickedUsers.includes(user));
+
+    if (availableUsersForRole.length === 0) return;
+
+    const randomIndex = Math.floor(Math.random() * availableUsersForRole.length);
+    const pickedUser = availableUsersForRole[randomIndex];
+
+    setPickedRoles(prevRoles => ({ ...prevRoles, [role]: pickedUser }));
+    setShowModal(true); // Show modal with the updated pickedUsers (from useEffect)
+  };
+
+  const handleResetRoles = () => {
+    setPickedRoles({});
+  };
+
   const handleCloseModal = () => {
     setShowModal(false);
-    setPickedUsers([]); // Clear picked users when modal closes
+    // pickedUsers are updated by useEffect based on pickedRoles, no need to clear here
   };
 
   return (
-    <div className="App" style={{ backgroundImage: `url(${backgroundImage})`, backgroundSize: '200px', backgroundRepeat: 'no-repeat', backgroundPosition: '65% 30%' }}>
+    <div className="App" style={{ backgroundImage: `url(${backgroundImage})`, backgroundSize: '450px', backgroundRepeat: 'no-repeat', backgroundPosition: '120px 80px' }}>
       <header className="App-header">
         <h1>유어리 룰렛</h1>
         <div className="user-input-section">
@@ -78,28 +116,52 @@ function App() {
           <h3>전체 참여자 ({users.length}명)</h3>
           <ul className="user-list">
             {users.map((user, index) => (
-              <li key={index}>
+              <li key={index} className={Object.values(pickedRoles).includes(user) ? 'picked-role-user' : ''}>
                 {user}
+                {Object.keys(pickedRoles).find(role => pickedRoles[role] === user) &&
+                  <span> ({Object.keys(pickedRoles).find(role => pickedRoles[role] === user)})</span>
+                }
                 <button onClick={() => handleUserRemove(index)} className="remove-user-button">삭제</button>
               </li>
             ))}
           </ul>
+          <button onClick={handleClearAllUsers} className="white-button">전체 삭제</button>
         </div>
 
         <div className="controls-section">
           <h2>추첨하기</h2>
-          <button onClick={() => handlePick(1)} disabled={users.length < 1}>
+          <button onClick={() => handlePick(1)} disabled={users.length < 1 || Object.values(pickedRoles).length === users.length}>
             1명 뽑기
           </button>
-          <button onClick={() => handlePick(2)} disabled={users.length < 2}>
+          <button onClick={() => handlePick(2)} disabled={users.length < 2 || Object.values(pickedRoles).length === users.length -1 || Object.values(pickedRoles).length === users.length}>
             2명 뽑기
           </button>
-          <button onClick={() => handlePick(3)} disabled={users.length < 3}>
+          <button onClick={() => handlePick(3)} disabled={users.length < 3 || Object.values(pickedRoles).length === users.length -2 || Object.values(pickedRoles).length === users.length -1 || Object.values(pickedRoles).length === users.length}>
             3명 뽑기
           </button>
-          <button onClick={() => handlePick(4)} disabled={users.length < 4}>
+          <button onClick={() => handlePick(4)} disabled={users.length < 4 || Object.values(pickedRoles).length === users.length -3 || Object.values(pickedRoles).length === users.length -2 || Object.values(pickedRoles).length === users.length -1 || Object.values(pickedRoles).length === users.length}>
             4명 뽑기
           </button>
+        </div>
+
+        <div className="controls-section">
+          <h2>라인 추첨</h2>
+          <button onClick={() => handlePickRole('탑')} disabled={users.length === 0 || pickedRoles['탑'] || Object.values(pickedRoles).length === users.length}>
+            탑
+          </button>
+          <button onClick={() => handlePickRole('미드')} disabled={users.length === 0 || pickedRoles['미드'] || Object.values(pickedRoles).length === users.length}>
+            미드
+          </button>
+          <button onClick={() => handlePickRole('정글')} disabled={users.length === 0 || pickedRoles['정글'] || Object.values(pickedRoles).length === users.length}>
+            정글
+          </button>
+          <button onClick={() => handlePickRole('원딜')} disabled={users.length === 0 || pickedRoles['원딜'] || Object.values(pickedRoles).length === users.length}>
+            원딜
+          </button>
+          <button onClick={() => handlePickRole('서폿')} disabled={users.length === 0 || pickedRoles['서폿'] || Object.values(pickedRoles).length === users.length}>
+            서폿
+          </button>
+          <button onClick={handleResetRoles} className="white-button">초기화</button>
         </div>
 
         {showModal && (
