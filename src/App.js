@@ -86,6 +86,44 @@ function App() {
     setShowModal(true); // Show modal with the updated pickedUsers (from useEffect)
   };
 
+  const handleLinePick = () => {
+    const roles = ['탑', '미드', '정글', '원딜', '서폿'];
+    let tempPickedRoles = {};
+    let availableUsersForLinePick = [...users]; // Start with all current users
+
+    // 1. Assign '유어리' to a random role
+    const yuriyRoleIndex = Math.floor(Math.random() * roles.length);
+    const yuriyRole = roles[yuriyRoleIndex];
+    tempPickedRoles[yuriyRole] = '유어리';
+
+    // Remove the assigned role from the list of roles to be filled by others
+    const remainingRoles = roles.filter(role => role !== yuriyRole);
+
+    // Ensure '유어리' is not picked from the available users if they happen to be in the list
+    availableUsersForLinePick = availableUsersForLinePick.filter(user => user !== '유어리');
+
+    // 2. Pick remaining 4 users for remaining roles
+    // Filter out users already assigned a role (only '유어리' at this point) 
+    const currentlyPickedForRoles = Object.values(tempPickedRoles);
+    const trulyAvailable = availableUsersForLinePick.filter(user => !currentlyPickedForRoles.includes(user));
+
+    if (trulyAvailable.length < 4) {
+      alert('라인 추첨을 위해서는 최소 4명의 다른 참여자가 필요합니다.');
+      return;
+    }
+
+    const shuffledAvailable = [...trulyAvailable].sort(() => 0.5 - Math.random());
+    const pickedFourUsers = shuffledAvailable.slice(0, 4);
+
+    // 3. Assign remaining picked users to remaining roles
+    for (let i = 0; i < remainingRoles.length; i++) {
+      tempPickedRoles[remainingRoles[i]] = pickedFourUsers[i];
+    }
+
+    setPickedRoles(tempPickedRoles);
+    setShowModal(true);
+  };
+
   const handleResetRoles = () => {
     setPickedRoles({});
   };
@@ -96,7 +134,7 @@ function App() {
   };
 
   return (
-    <div className="App" style={{ backgroundImage: `url(${backgroundImage})`, backgroundSize: '450px', backgroundRepeat: 'no-repeat', backgroundPosition: '120px 80px' }}>
+    <div className="App" style={{ backgroundImage: `url(${backgroundImage})`, backgroundSize: '500px', backgroundRepeat: 'no-repeat', backgroundPosition: '120px 50px' }}>
       <header className="App-header">
         <h1>유어리 룰렛</h1>
         <div className="user-input-section">
@@ -146,6 +184,9 @@ function App() {
 
         <div className="controls-section">
           <h2>라인 추첨</h2>
+          <button onClick={handleLinePick} disabled={users.length < 4 || Object.values(pickedRoles).length === users.length}>
+            라인 추첨
+          </button>
           <button onClick={() => handlePickRole('탑')} disabled={users.length === 0 || pickedRoles['탑'] || Object.values(pickedRoles).length === users.length}>
             탑
           </button>
@@ -165,7 +206,7 @@ function App() {
         </div>
 
         {showModal && (
-          <ResultModal pickedUsers={pickedUsers} onClose={handleCloseModal} />
+          <ResultModal pickedRoles={pickedRoles} onClose={handleCloseModal} />
         )}
       </header>
     </div>

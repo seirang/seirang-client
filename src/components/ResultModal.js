@@ -1,14 +1,19 @@
 import React from 'react';
-import './ResultModal.css'; // We will create this CSS file next
+import './ResultModal.css';
 
-const ResultModal = ({ pickedUsers, onClose }) => {
+const ResultModal = ({ pickedRoles, onClose }) => {
+  // Convert pickedRoles object into an array of { role, user } pairs
+  const results = Object.entries(pickedRoles).map(([role, user]) => ({ role, user }));
+
   return (
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal-content" onClick={(e) => e.stopPropagation()}>
         <h2>추첨 결과</h2>
         <ul className="picked-users">
-          {pickedUsers.map((user, index) => (
-            <li key={index}>{user}</li>
+          {results.map((item, index) => (
+            <li key={index}>
+              {item.user} ({item.role})
+            </li>
           ))}
         </ul>
         <button onClick={onClose}>닫기</button>
