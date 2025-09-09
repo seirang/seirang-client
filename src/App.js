@@ -134,7 +134,7 @@ function App() {
   };
 
   return (
-    <div className="App" style={{ backgroundImage: `url(${backgroundImage})`, backgroundSize: '500px', backgroundRepeat: 'no-repeat', backgroundPosition: '120px 50px' }}>
+    <div className="App" style={{ backgroundImage: `url(${backgroundImage})`, backgroundSize: '200px', backgroundRepeat: 'no-repeat', backgroundPosition: '65% 30%' }}>
       <header className="App-header">
         <h1>유어리 룰렛</h1>
         <div className="user-input-section">
