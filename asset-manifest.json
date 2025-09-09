@@ -1,0 +1,16 @@
+{
+  "files": {
+    "main.css": "/seirang-client/static/css/main.5b6c6778.css",
+    "main.js": "/seirang-client/static/js/main.0f7f9c98.js",
+    "static/js/453.96453769.chunk.js": "/seirang-client/static/js/453.96453769.chunk.js",
+    "static/media/Uri.png": "/seirang-client/static/media/Uri.59e8de6c1daab302ae7c.png",
+    "index.html": "/seirang-client/index.html",
+    "main.5b6c6778.css.map": "/seirang-client/static/css/main.5b6c6778.css.map",
+    "main.0f7f9c98.js.map": "/seirang-client/static/js/main.0f7f9c98.js.map",
+    "453.96453769.chunk.js.map": "/seirang-client/static/js/453.96453769.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.5b6c6778.css",
+    "static/js/main.0f7f9c98.js"
+  ]
+}
