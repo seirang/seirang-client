@@ -20,7 +20,7 @@
   max-width: 90%;
   max-height: 90%;
   overflow-y: auto;
-  color: #282c34; /* Darker text for readability on light background */
+  color: #282c34;
 }
 
 .modal-content h2 {

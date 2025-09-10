@@ -1,10 +1,7 @@
 import React from 'react';
 import './ResultModal.css';
 
-const ResultModal = ({ pickedRoles, onClose }) => {
-  // Convert pickedRoles object into an array of { role, user } pairs
-  const results = Object.entries(pickedRoles).map(([role, user]) => ({ role, user }));
-
+const ResultModal = ({ results, onClose }) => {
   return (
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal-content" onClick={(e) => e.stopPropagation()}>
@@ -12,7 +9,7 @@ const ResultModal = ({ pickedRoles, onClose }) => {
         <ul className="picked-users">
           {results.map((item, index) => (
             <li key={index}>
-              {item.user} ({item.role})
+              {item.user} {item.role && `(${item.role})`}
             </li>
           ))}
         </ul>
