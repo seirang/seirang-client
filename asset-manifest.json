@@ -1,16 +1,16 @@
 {
   "files": {
-    "main.css": "/seirang-client/static/css/main.5eedb3bb.css",
-    "main.js": "/seirang-client/static/js/main.3fede197.js",
+    "main.css": "/seirang-client/static/css/main.2041d534.css",
+    "main.js": "/seirang-client/static/js/main.c82e284b.js",
     "static/js/453.96453769.chunk.js": "/seirang-client/static/js/453.96453769.chunk.js",
     "static/media/Uri.png": "/seirang-client/static/media/Uri.59e8de6c1daab302ae7c.png",
     "index.html": "/seirang-client/index.html",
-    "main.5eedb3bb.css.map": "/seirang-client/static/css/main.5eedb3bb.css.map",
-    "main.3fede197.js.map": "/seirang-client/static/js/main.3fede197.js.map",
+    "main.2041d534.css.map": "/seirang-client/static/css/main.2041d534.css.map",
+    "main.c82e284b.js.map": "/seirang-client/static/js/main.c82e284b.js.map",
     "453.96453769.chunk.js.map": "/seirang-client/static/js/453.96453769.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.5eedb3bb.css",
-    "static/js/main.3fede197.js"
+    "static/css/main.2041d534.css",
+    "static/js/main.c82e284b.js"
   ]
 }
