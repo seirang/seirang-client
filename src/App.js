@@ -117,6 +117,28 @@ function App() {
     setShowModal(true);
   };
 
+  const handleTeamPick = () => {
+    const availableUsers = getAvailableUsers();
+    if (availableUsers.length < 10) {
+      alert('5 대 5 팀 추첨을 위해서는 최소 10명의 참여자가 필요합니다.');
+      return;
+    }
+
+    const shuffled = [...availableUsers].sort(() => 0.5 - Math.random());
+    const pickedTen = shuffled.slice(0, 10);
+    
+    const teamA = pickedTen.slice(0, 5);
+    const teamB = pickedTen.slice(5, 10);
+
+    const results = [
+      ...teamA.map(user => ({ user, team: '1팀' })),
+      ...teamB.map(user => ({ user, team: '2팀' })),
+    ];
+    
+    setModalResults(results);
+    setShowModal(true);
+  };
+
   const handleResetRoles = () => {
     setPickedRoles({});
   };
@@ -145,6 +167,7 @@ function App() {
         />
         <PickingControls 
           handlePick={handlePick} 
+          handleTeamPick={handleTeamPick}
           availableUsersCount={availableUsersCount} 
         />
         <RoleControls 

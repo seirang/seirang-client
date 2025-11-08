@@ -60,3 +60,21 @@
 .modal-content button:hover {
   background-color: #1a7bb9;
 }
+
+.teams-container {
+  display: flex;
+  justify-content: space-around;
+  width: 100%;
+  gap: 20px;
+}
+
+.team-section {
+  flex: 1;
+}
+
+.team-section h3 {
+  color: #1a7bb9;
+  border-bottom: 2px solid #1a7bb9;
+  padding-bottom: 5px;
+  margin-bottom: 10px;
+}
