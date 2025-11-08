@@ -139,6 +139,57 @@ function App() {
     setShowModal(true);
   };
 
+  const handlePick4TeamsOf2 = () => {
+    const teamCount = 4;
+    const membersPerTeam = 2;
+    const requiredUsers = teamCount * membersPerTeam;
+    const availableUsers = getAvailableUsers();
+    if (availableUsers.length < requiredUsers) {
+      alert(`2명씩 4팀 뽑기를 위해서는 최소 ${requiredUsers}명의 참여자가 필요합니다.`);
+      return;
+    }
+
+    const shuffled = [...availableUsers].sort(() => 0.5 - Math.random());
+    const picked = shuffled.slice(0, requiredUsers);
+    
+    const results = [];
+    for (let i = 0; i < teamCount; i++) {
+      const teamUsers = picked.slice(i * membersPerTeam, (i + 1) * membersPerTeam);
+      teamUsers.forEach(user => {
+        results.push({ user, team: `${i + 1}팀` });
+      });
+    }
+    
+    setModalResults(results);
+    setShowModal(true);
+  };
+
+  const handlePick8TeamsOf2 = () => {
+    const teamCount = 8;
+    const membersPerTeam = 2;
+    const requiredUsers = teamCount * membersPerTeam;
+    const availableUsers = getAvailableUsers();
+
+    if (availableUsers.length < requiredUsers) {
+      alert(`2명씩 8팀 뽑기를 위해서는 최소 ${requiredUsers}명의 참여자가 필요합니다.`);
+      return;
+    }
+
+    const shuffled = [...availableUsers].sort(() => 0.5 - Math.random());
+    const picked = shuffled.slice(0, requiredUsers);
+    
+    const results = [];
+    for (let i = 0; i < teamCount; i++) {
+        const teamUsers = picked.slice(i * membersPerTeam, (i + 1) * membersPerTeam);
+        teamUsers.forEach(user => {
+            results.push({ user, team: `${i + 1}팀` });
+        });
+    }
+    
+    setModalResults(results);
+    setShowModal(true);
+  };
+
   const handleResetRoles = () => {
     setPickedRoles({});
   };
@@ -168,6 +219,8 @@ function App() {
         <PickingControls 
           handlePick={handlePick} 
           handleTeamPick={handleTeamPick}
+          handlePick4TeamsOf2={handlePick4TeamsOf2}
+          handlePick8TeamsOf2={handlePick8TeamsOf2}
           availableUsersCount={availableUsersCount} 
         />
         <RoleControls 
